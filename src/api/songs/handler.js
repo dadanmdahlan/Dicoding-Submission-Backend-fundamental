@@ -1,4 +1,6 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable no-unused-vars */
+/* eslint-disable linebreak-style */
 /* eslint-disable no-console */
 /* eslint-disable linebreak-style */
 /* eslint-disable no-underscore-dangle */
@@ -17,42 +19,23 @@ class SongsHandler {
   }
 
   async postSongHandler(request, h) {
-    try {
-      this._validator.validateSongPayload(request.payload);
-      const {
-        title = 'untitle', year, performer, genre, duration,
-      } = request.payload;
-      const songId = await this._service.addSong({
-        title, year, performer, genre, duration,
-      });
+    this._validator.validateSongPayload(request.payload);
+    const {
+      title = 'untitle', year, performer, genre, duration,
+    } = request.payload;
+    const songId = await this._service.addSong({
+      title, year, performer, genre, duration,
+    });
 
-      const response = h.response({
-        status: 'success',
-        message: 'Lagu berhasil ditambahkan',
-        data: {
-          songId,
-        },
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-      // server error
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf terjadi kegagalan pada server kami',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    const response = h.response({
+      status: 'success',
+      message: 'Lagu berhasil ditambahkan',
+      data: {
+        songId,
+      },
+    });
+    response.code(201);
+    return response;
   }
 
   async getSongsHandler() {
@@ -96,67 +79,28 @@ class SongsHandler {
   }
 
   async putSongByIdHandler(request, h) {
-    try {
-      this._validator.validateSongPayload(request.payload);
-      const {
-        title, year, performer, genre, duration,
-      } = request.payload;
-      const { songId } = request.params;
-      await this._service.editSongById(songId, {
-        title, year, performer, genre, duration,
-      });
+    this._validator.validateSongPayload(request.payload);
+    const {
+      title, year, performer, genre, duration,
+    } = request.payload;
+    const { songId } = request.params;
+    await this._service.editSongById(songId, {
+      title, year, performer, genre, duration,
+    });
 
-      return {
-        status: 'success',
-        message: 'Lagu berhasil diperbarui',
-      };
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server error
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+    return {
+      status: 'success',
+      message: 'Lagu berhasil diperbarui',
+    };
   }
 
   async deleteSongByIdHandler(request, h) {
-    try {
-      const { songId } = request.params;
-      await this._service.deleteSongById(songId);
-      return {
-        status: 'success',
-        message: 'Lagu berhasil dihapus',
-      };
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: 'Lagu gagal dihapus, Id tidak ditemukan',
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server error
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami',
-      });
-      response.code(500);
-      return response;
-    }
+    const { songId } = request.params;
+    await this._service.deleteSongById(songId);
+    return {
+      status: 'success',
+      message: 'Lagu berhasil dihapus',
+    };
   }
 }
 module.exports = SongsHandler;
