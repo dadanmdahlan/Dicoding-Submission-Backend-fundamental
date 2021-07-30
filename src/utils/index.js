@@ -1,7 +1,3 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable eol-last */
-/* eslint-disable camelcase */
-/* eslint-disable linebreak-style */
 const mapDBToModel = ({
   id,
   title,

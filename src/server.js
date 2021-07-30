@@ -1,6 +1,3 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable no-console */
-/* eslint-disable linebreak-style */
 const Hapi = require('@hapi/hapi');
 const songs = require('./api/songs');
 const SongsValidator = require('./validator/songs');
@@ -31,8 +28,7 @@ const init = async () => {
   server.ext('onPreResponse', (request, h) => {
     // mendapatkan response dari request
     const { response } = request;
-
-    if (response instanceof ClientError) {
+        if (response instanceof ClientError) {
       // membuat response baru dari response error handling
       const newResponse = h.response({
         status: 'fail',
@@ -41,8 +37,22 @@ const init = async () => {
       newResponse.code(response.statusCode);
       return newResponse;
     }
-
-    // jika bukan clienterror , lanjutkan dengan response sebelumnya
+    if (response instanceof Error) {
+      const { statusCode, payload } = response.output;
+      switch (statusCode) {
+        case 500:
+          payload.message = 'Maaf terjadi kesalahan pada server kami';
+          console.log(response);
+          const newResponse = h.response({
+            status: 'error',
+            message: payload.message,
+          }).code(500);
+          return newResponse;
+        default:
+          return h.response(payload).code(statusCode);
+      }
+    }
+    // jika bukan clienterror dan server error , lanjutkan dengan response sebelumnya
     return response.continue || response;
   });
   await server.start();

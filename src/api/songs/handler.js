@@ -1,21 +1,11 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable no-unused-vars */
-/* eslint-disable linebreak-style */
-/* eslint-disable no-console */
-/* eslint-disable linebreak-style */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable linebreak-style */
 const ClientError = require('../../exceptions/ClientError');
+const autoBind = require('auto-bind');
 
 class SongsHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
-    this.postSongHandler = this.postSongHandler.bind(this);
-    this.getSongsHandler = this.getSongsHandler.bind(this);
-    this.getSongByIdHandler = this.getSongByIdHandler.bind(this);
-    this.putSongByIdHandler = this.putSongByIdHandler.bind(this);
-    this.deleteSongByIdHandler = this.deleteSongByIdHandler.bind(this);
+    autoBind(this);   
   }
 
   async postSongHandler(request, h) {
@@ -38,8 +28,8 @@ class SongsHandler {
     return response;
   }
 
-  async getSongsHandler() {
-    const songs = await this._service.getSongs();
+  async getSongsHandler(h) {
+    const songs = await this._service.getSongs(); 
     return {
       status: 'success',
       data: {
@@ -47,9 +37,8 @@ class SongsHandler {
       },
     };
   }
-
+  
   async getSongByIdHandler(request, h) {
-    try {
       const { songId } = request.params;
       const song = await this._service.getSongById(songId);
       return {
@@ -57,25 +46,7 @@ class SongsHandler {
         data: {
           song,
         },
-      };
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-      // Server Error
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
-    }
+      };  
   }
 
   async putSongByIdHandler(request, h) {

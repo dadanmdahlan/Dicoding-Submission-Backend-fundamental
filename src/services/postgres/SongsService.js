@@ -1,6 +1,3 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable linebreak-style */
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const NotFoundError = require('../../exceptions/NotFoundError');
@@ -42,7 +39,7 @@ class SongsService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Lagu tidak ditemukan');
     }
     return result.rows.map(mapDBToModel)[0];
@@ -57,7 +54,7 @@ class SongsService {
       values: [title, year, performer, genre, duration, updatedAt, songId],
     };
     const result = await this._pool.query(query);
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Gagal memperbarui lagu, Id tidak ditemukan');
     }
   }
@@ -68,7 +65,7 @@ class SongsService {
       values: [songId],
     };
     const result = await this._pool.query(query);
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Lagu gagal dihapus, Id tidak ditemukan');
     }
   }
