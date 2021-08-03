@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const NotFoundError = require('../../exceptions/NotFoundError');
-const InvariantError = require('../../exceptions/Invariant');
+const InvariantError = require('../../exceptions/InvariantError');
 const { mapDBToModel } = require('../../utils');
 
 class SongsService {
@@ -67,6 +67,17 @@ class SongsService {
     const result = await this._pool.query(query);
     if (!result.rowCount) {
       throw new NotFoundError('Lagu gagal dihapus, Id tidak ditemukan');
+    }
+  }
+
+  async verifySongIsExist(songId) {
+    const query = {
+      text: 'SELECT COUNT(1) FROM songs WHERE id = $1',
+      values: [songId],
+    };
+    const result = await this._pool.query(query);
+    if (!result) {
+      throw new NotFoundError('Lagu yang dicari tidak ditemukan');
     }
   }
 }
