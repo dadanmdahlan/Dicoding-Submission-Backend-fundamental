@@ -16,6 +16,10 @@
         "no-underscore-dangle": "off",
         "linebreak-style" : "off",
         "no-unused-vars" :"off",
-        "camelcase" :"off"
+        "camelcase" :"off",
+        "max-len"  : "off",
+        "no-case-declarations":"off",
+        "import/no-unresolved": "off",
+        "import/extensions": "off"
     }
 }

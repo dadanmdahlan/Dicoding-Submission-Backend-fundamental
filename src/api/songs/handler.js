@@ -1,11 +1,11 @@
-const ClientError = require('../../exceptions/ClientError');
 const autoBind = require('auto-bind');
+const ClientError = require('../../exceptions/ClientError');
 
 class SongsHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
-    autoBind(this);   
+    autoBind(this);
   }
 
   async postSongHandler(request, h) {
@@ -29,7 +29,7 @@ class SongsHandler {
   }
 
   async getSongsHandler(h) {
-    const songs = await this._service.getSongs(); 
+    const songs = await this._service.getSongs();
     return {
       status: 'success',
       data: {
@@ -37,16 +37,16 @@ class SongsHandler {
       },
     };
   }
-  
+
   async getSongByIdHandler(request, h) {
-      const { songId } = request.params;
-      const song = await this._service.getSongById(songId);
-      return {
-        status: 'success',
-        data: {
-          song,
-        },
-      };  
+    const { songId } = request.params;
+    const song = await this._service.getSongById(songId);
+    return {
+      status: 'success',
+      data: {
+        song,
+      },
+    };
   }
 
   async putSongByIdHandler(request, h) {
