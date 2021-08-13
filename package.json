@@ -1,11 +1,12 @@
 {
-  "name": "OpenMusic-APIV1",
+  "name": "openmusic-apiv1",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start-prod": "NODE_ENV=production node ./src/server.js",
-    "start-dev": "nodemon ./src/server.js",
+    "start-prod": "NODE_ENV=production node ./src_api/server.js",
+    "start-dev-api": "nodemon ./src_api/server.js",
+    "start-dev-consumer": "nodemon ./src_queue_consumer/consumer.js",
     "lint": "eslint ./src",
     "migrate": "node-pg-migrate"
   },
@@ -20,13 +21,17 @@
   },
   "dependencies": {
     "@hapi/hapi": "^20.1.5",
+    "@hapi/inert": "^6.0.3",
     "@hapi/jwt": "^2.0.1",
+    "amqplib": "^0.8.0",
     "auto-bind": "^4.0.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "joi": "^17.4.1",
     "nanoid": "^3.1.23",
     "node-pg-migrate": "^5.10.0",
-    "pg": "^8.6.0"
+    "nodemailer": "^6.6.3",
+    "pg": "^8.6.0",
+    "redis": "^3.1.2"
   }
 }

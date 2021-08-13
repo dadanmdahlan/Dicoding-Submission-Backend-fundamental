@@ -3,8 +3,9 @@ const { Pool } = require('pg');
 const InvariantError = require('../../exceptions/InvariantError');
 
 class PlaylistSongsService {
-  constructor() {
+  constructor(cacheService) {
     this._pool = new Pool();
+    this._cacheService = cacheService;
   }
 
   async addSongToPlaylist(playlistId, songId) {
@@ -17,18 +18,25 @@ class PlaylistSongsService {
     if (!result.rowCount) {
       throw new InvariantError('Lagu gagal ditambahkan ke playlist');
     }
+    await this._cacheService.delete(`playlistSongs: ${playlistId}`);
   }
 
   async getSongsFromPlaylist(playlistId) {
-    const query = {
-      text: 'SELECT songs.id, songs.title,songs.performer FROM playlists INNER JOIN playlistsongs ON playlistsongs.playlist_id = playlists.id INNER JOIN songs ON songs.id = playlistsongs.song_id WHERE playlists.id = $1',
-      values: [playlistId],
-    };
-    const result = await this._pool.query(query);
-    if (!result.rows) {
-      throw new InvariantError('Gagal Memuat lagu dari playlist');
+    try {
+      const resultCache = await this._cacheService.get(`playlistSongs:${playlistId}`);
+      return JSON.parse(resultCache);
+    } catch (error) {
+      const query = {
+        text: 'SELECT songs.id, songs.title,songs.performer FROM playlists INNER JOIN playlistsongs ON playlistsongs.playlist_id = playlists.id INNER JOIN songs ON songs.id = playlistsongs.song_id WHERE playlists.id = $1',
+        values: [playlistId],
+      };
+      const result = await this._pool.query(query);
+      if (!result.rows) {
+        throw new InvariantError('Gagal Memuat lagu dari playlist');
+      }
+      await this._cacheService.set(`playlistSongs:${playlistId}`, JSON.stringify(result.rows));
+      return result.rows;
     }
-    return result.rows;
   }
 
   async deleteSongFromPlaylist(playlistId, songId) {
@@ -40,6 +48,7 @@ class PlaylistSongsService {
     if (!result.rowCount) {
       throw new InvariantError('Lagu gagal dihapus dari playlist, Id tidak ditemukan');
     }
+    await this._cacheService.delete(`playlistSong: ${playlistId}`);
   }
 }
 module.exports = PlaylistSongsService;
