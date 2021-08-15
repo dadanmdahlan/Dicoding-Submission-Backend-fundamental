@@ -11,11 +11,11 @@ class PlaylistsService {
     this._cacheService = cacheService;
   }
 
-  async addPlaylist({ name, owner }) {
+  async addPlaylist({ name, userId }) {
     const id = `playlist-${nanoid(16)}`;
     const query = {
       text: 'INSERT INTO playlists VALUES($1, $2, $3) RETURNING id',
-      values: [id, name, owner],
+      values: [id, name, userId],
     };
 
     const result = await this._pool.query(query);
@@ -23,7 +23,7 @@ class PlaylistsService {
     if (!result.rows[0].id) {
       throw new InvariantError('Playlist gagal ditambahkan');
     }
-    await this._cacheService.delete(`playlists:${owner}`);
+    await this._cacheService.delete(`playlists:${userId}`);
     return result.rows[0].id;
   }
 

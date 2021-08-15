@@ -24,24 +24,24 @@ class SongsService {
     if (!result.rows[0].id) {
       throw new InvariantError('Lagu gagal ditambahkan');
     }
-    await this._cacheService.delete('songs:allSongs');
+    await this._cacheService.delete('songs:allsongs');
     return result.rows[0].id;
   }
 
   async getSongs() {
     try {
-      const resultCache = await this._cacheService.get('songs:allSongs');
+      const resultCache = await this._cacheService.get('songs:allsongs');
       return JSON.parse(resultCache);
     } catch (error) {
       const result = await this._pool.query('SELECT id,title,performer FROM songs');
-      await this._cacheService.set('songs: allsongs', JSON.stringify(result.rows));
+      await this._cacheService.set('songs:allsongs', JSON.stringify(result.rows));
       return result.rows;
     }
   }
 
   async getSongById(songId) {
     try {
-      const resultCache = await this._cacheService.get(`songs : ${songId}`);
+      const resultCache = await this._cacheService.get(`songs:${songId}`);
       return JSON.parse(resultCache);
     } catch (error) {
       const query = {
@@ -72,8 +72,8 @@ class SongsService {
     if (!result.rowCount) {
       throw new NotFoundError('Gagal memperbarui lagu, Id tidak ditemukan');
     }
-    await this._cacheService.delete('songs: allsong');
-    await this._cacheService.delete(`songs: ${songId}`);
+    await this._cacheService.delete('songs:allsongs');
+    await this._cacheService.delete(`songs:${songId}`);
   }
 
   async deleteSongById(songId) {
@@ -85,8 +85,8 @@ class SongsService {
     if (!result.rowCount) {
       throw new NotFoundError('Lagu gagal dihapus, Id tidak ditemukan');
     }
-    await this._cacheService.delete('songs: allsong');
-    await this._cacheService.delete(`songs: ${songId}`);
+    await this._cacheService.delete('songs:allsongs');
+    await this._cacheService.delete(`songs:${songId}`);
   }
 
   async verifySongIsExist(songId) {

@@ -18,7 +18,7 @@ class PlaylistSongsService {
     if (!result.rowCount) {
       throw new InvariantError('Lagu gagal ditambahkan ke playlist');
     }
-    await this._cacheService.delete(`playlistSongs: ${playlistId}`);
+    await this._cacheService.delete(`playlistSongs:${playlistId}`);
   }
 
   async getSongsFromPlaylist(playlistId) {
@@ -48,7 +48,7 @@ class PlaylistSongsService {
     if (!result.rowCount) {
       throw new InvariantError('Lagu gagal dihapus dari playlist, Id tidak ditemukan');
     }
-    await this._cacheService.delete(`playlistSong: ${playlistId}`);
+    await this._cacheService.delete(`playlistSongs:${playlistId}`);
   }
 }
 module.exports = PlaylistSongsService;
