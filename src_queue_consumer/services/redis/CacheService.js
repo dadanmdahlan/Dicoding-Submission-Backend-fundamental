@@ -17,7 +17,7 @@ class CacheService {
         if (error) {
           return reject(error);
         }
-        console.log(`data tersimpan di cache dengan key: ${key}`);
+        console.log(`data tersimpan dengan key : ${key}`);
         return resolve(ok);
       });
     });
@@ -43,7 +43,7 @@ class CacheService {
         if (error) {
           return reject(error);
         }
-        console.log(`data terhapus dari cache dengan key: ${key}`);
+        console.log(`data terhapus dari cache dengan key : ${key}`);
         return resolve(count);
       });
     });

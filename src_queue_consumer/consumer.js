@@ -3,9 +3,11 @@ const amqp = require('amqplib');
 const PlaylistsService = require('./services/postgres/PlaylistsService');
 const MailSender = require('./services/mailSender/MailSender');
 const Listener = require('./services/listener/Listener');
+const CacheService = require('./services/redis/CacheService');
 
 const init = async () => {
-  const playlistService = new PlaylistsService();
+  const cacheService = new CacheService();
+  const playlistService = new PlaylistsService(cacheService);
   const mailSender = new MailSender();
   const listener = new Listener(playlistService, mailSender);
 
